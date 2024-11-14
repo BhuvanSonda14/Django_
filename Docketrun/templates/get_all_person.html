@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h2>Employs List</h2>
+    {% if latest_employ %}
+    <ul>
+    {% for employ in latest_employ reversed %}
+        <li><a href="employ_details/{{ employ.id }}/">{{ employ.name }}</a></li>
+    {% empty %} 
+    <li>No members</li>
+  {% endfor %}
+    </ul>
+    {% else %}
+    <h3><p>No latest_Employ are available.</p></h3>
+        {% endif %}
+        <hr>
+        <p>Go to the Main Page <a href="/Docketrun/main">Go To Main</a></p>
+</body>
+</html>
