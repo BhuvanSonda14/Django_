@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management</title>
+    <script>
+        const baseUrl = 'http://127.0.0.1:8000/employees/';
+
+        function getAllEmployees() {
+            fetch(baseUrl)
+                .then(response => response.json())
+                .then(data => {
+                    let output = "<h3>Employee List</h3>";
+                    data.forEach(employee => {
+                        output += `<p><strong>${employee.name}</strong>: ${employee.email} (ID: ${employee.id})</p>`;
+                    });
+                    document.getElementById('employee').innerHTML = output;
+                });
+        }
+
+        function getEmployeeById() {
+            const employeeId = document.getElementById('get-employee-id').value;
+            fetch(`${baseUrl}${employeeId}/`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('single-employee').innerHTML = `<h3>Employee Details</h3><p><strong>${data.name}</strong>: ${data.email} (ID: ${data.id})</p>`;
+                });
+        }
+
+        function createEmployee() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const age = document.getElementById('age').value;
+            const test = document.getElementById('test').value;
+            fetch(baseUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, age, test })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Employee created with ID ' + data.id);
+                getAllEmployees();
+            });
+        }
+
+        function updateEmployee() {
+            const employeeId = document.getElementById('put-employee-id').value;
+            const name = document.getElementById('put-name').value;
+            const email = document.getElementById('put-email').value;
+            const age = document.getElementById('put-age').value;
+            const test = document.getElementById('put-test').value;
+            fetch(`${baseUrl}${employeeId}/`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, age, test })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Employee updated with ID ' + data.id);
+                getAllEmployees();
+            });
+        }
+
+        function deleteEmployee() {
+            const employeeId = document.getElementById('delete-employee-id').value;
+            fetch(`${baseUrl}${employeeId}/`, {
+                method: 'DELETE'
+            })
+            .then(() => {
+                alert('Employee deleted');
+                getAllEmployees();
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Manage Employees</h1>
+
+    <div id="employees"></div>
+    <button onclick="getAllEmployees()">Refresh Employee List</button>
+
+    <h2>Get Employee by ID</h2>
+    <input type="number" id="get-employee-id" placeholder="Employee ID">
+    <button onclick="getEmployeeById()">Get Employee</button>
+    <div id="single-employee"></div>
+
+    <h2>Create New Employee</h2>
+    <input type="text" id="post-name" placeholder="Name">
+    <input type="email" id="post-email" placeholder="Email">
+    <input type="number" id="post-age" placeholder="Age">
+    <input type="text" id="post-test" placeholder="Test">
+    <button onclick="createEmployee()">Create Employee</button>
+
+    <h2>Update Employee</h2>
+    <input type="number" id="put-employee-id" placeholder="Employee ID">
+    <input type="text" id="put-name" placeholder="New Name">
+    <input type="email" id="put-email" placeholder="New Email">
+    <input type="number" id="put-age" placeholder="New Age">
+    <input type="text" id="put-test" placeholder="New Test">
+    <button onclick="updateEmployee()">Update Employee</button>
+
+    <h2>Delete Employee</h2>
+    <input type="number" id="delete-employee-id" placeholder="Employee ID">
+    <button onclick="deleteEmployee()">Delete Employee</button>
+</body>
+</html>

@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Employee</title>
+    <script>
+        function createEmployee() {
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const age = document.getElementById("age").value;
+            const salary = document.getElementById("salary").value;
+
+            // Send the POST request with JSON payload
+            fetch("http://127.0.0.1:8000/Docketrun/create_employee/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie("csrftoken")  // Add CSRF token to headers
+                },
+                body: JSON.stringify({
+                    name: name,
+                    email: email,
+                    age: parseInt(age),
+                    salary: parseInt(salary)
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert("Error: " + data.error);  // Display error message if any
+                } else {
+                    alert("Employee Created: " + JSON.stringify(data));  // Show success message
+                    window.location.href = '/Docketrun/get_all_person/';  // Redirect to employee list
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);  // Handle any network errors
+                alert("Failed to create employee.");
+            });
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Clear the form fields after successful submission
+        function clearForm() {
+            document.getElementById("name").value = "";
+            document.getElementById("email").value = "";
+            document.getElementById("age").value = "";
+            document.getElementById("salary").value = "";
+        }
+    </script>
+</head>
+<body>
+    <h1>Create Employee</h1>
+    
+    <!-- Form to submit employee data -->
+    <form onsubmit="event.preventDefault(); createEmployee();">
+        {% csrf_token %} <!-- CSRF token for security -->
+        
+        <label for="name">Name:</label>
+        <input type="text" id="name" placeholder="Enter name" required><br><br>
+        
+        <label for="email">Email:</label>
+        <input type="email" id="email" placeholder="Enter email" required><br><br>
+        
+        <label for="age">Age:</label>
+        <input type="number" id="age" placeholder="Enter age" required><br><br>
+        
+        <label for="salary">Salary:</label>
+        <input type="number" id="salary" placeholder="Enter salary" required><br><br>
+        
+        <button type="submit">Create Employee</button>
+    </form>
+
+    <hr>
+
+    <!-- Links to navigate to other pages -->
+    <p>Go to the Main Page: <a href="/Docketrun/main">Go To Main</a>  -----------or----------  <a href="/Docketrun/get_all_person/">Go Back</a></p>
+
+</body>
+</html>

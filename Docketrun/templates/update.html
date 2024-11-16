@@ -1,0 +1,44 @@
+<h1>{{employ.id}},{{employ.name}}</h1>
+
+<form id="updateForm" data-id="{{ employ.id }}">
+    {% csrf_token %}
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" value="{{ employ.name }}">
+    <button type="submit">Update</button>
+</form>
+
+<script>
+    document.getElementById("updateForm").addEventListener("submit", function(event) {
+        event.preventDefault();  // Prevent the form from refreshing the page
+        
+        let employeeId = this.getAttribute("data-id");
+        let name = document.getElementById("name").value;  // Get the updated name
+        
+        // Send the PUT request using fetch
+        fetch(`/Docketrun/update/${employeeId}/`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',  // CSRF token for security
+            },
+            body: JSON.stringify({
+                name: name  // Send the updated name in the request body
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                alert("Employee updated successfully!");
+                location.href = '/Docketrun/get_all_person/';
+            } else {
+                alert("Failed to update employee.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    });
+</script>
+<hr>
+
+    <!-- Links to navigate to other pages -->
+    <p>Go to the Main Page: <a href="/Docketrun/main">Go To Main</a>  -----------or----------  <a href="/Docketrun/get_all_person/">Go Back</a></p>

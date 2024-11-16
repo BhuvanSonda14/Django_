@@ -16,8 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 import Docketrun.urls
+import Ekalaksya.urls
 
 urlpatterns = [
     path('Docketrun/',include(Docketrun.urls)),
+    path('Ekalaksya/',include(Ekalaksya.urls)),
     path('admin/', admin.site.urls),
 ]
